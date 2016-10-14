@@ -14,15 +14,15 @@
 
     <script src=https://cdn.pubnub.com/sdk/javascript/pubnub.4.0.11.min.js></script>
     <script>(function(){
-        var pubnub = new PubNub({ publishKey : 'demo', subscribeKey : 'demo' });
+        var pubnub = new PubNub({ publishKey : 'pub-c-96bb401d-a315-490d-b8a9-a380239dd37a', subscribeKey : 'sub-c-2a0c3722-8fd5-11e6-8c91-02ee2ddab7fe' });
         function $(id) { return document.getElementById(id); }
         var box = $('box'), input = $('input'), channel = 'SiftNinja';
         pubnub.addListener({
             message: function(obj) {
-                box.innerHTML = (''+obj.message.text).replace( /[<>]/g, '' ) + '<br>' + box.innerHTML;
                 if ('sift_ninja' in obj.message && obj.message.sift_ninja.response === false) {
-                    box.innerHTML += '<em>Sift ninja found something bad!</em>' + '<br>';
+                    box.innerHTML = '&uarr; <em>Sift ninja found something bad!</em>' + '<br>' + box.innerHTML;
                 }
+                box.innerHTML = (''+obj.message.text).replace( /[<>]/g, '' ) + '<br>' + box.innerHTML;
             }});
         pubnub.subscribe({channels:[channel]});
         input.addEventListener('keyup', function(e) {

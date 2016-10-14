@@ -34,10 +34,10 @@ Replace the `message` callback handler with the following:
 
 ```javascript
 message: function(obj) {
-    box.innerHTML = (''+obj.message.text).replace( /[<>]/g, '' ) + '<br>' + box.innerHTML;
-    if ('sift_ninja' in obj.message && obj.message.sift_ninja.response === false) {
-        box.innerHTML += '<em>Sift Ninja found something bad!</em>' + '<br>';
+    if (obj.message.sift_ninja && obj.message.sift_ninja.response === false) {
+        box.innerHTML = '&uarr; <em>Sift ninja found something bad!</em>' + '<br>' + box.innerHTML;
     }
+    box.innerHTML = (''+obj.message.text).replace( /[<>]/g, '' ) + '<br>' + box.innerHTML;
 }});
 ```
 
