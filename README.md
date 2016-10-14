@@ -1,19 +1,52 @@
 # pubnub-ninja-demo
 A simple demo app showing how to get Sift Ninja working with PubNub Blocks
-
-# Getting Started
-Before we can get our chat app going, we'll need to have accounts set up with both PubNub and Sift Ninja.
  
 ## PubNub
-* Sign up for a free account at [www.pubnub.com](https://www.pubnub.com)
-* Once your account is created, create a new App called "Sift Ninja Demo" 
-from your main account page, and select the app's card
-* You'll be taken to a page showing the keysets (pairs of API keys to both Publish and Subscribe to an app's channels)
-for your app. A keyset called **Demo Keyset** will have already been created, so we'll use that. Make note of the keys; we'll need them later.
-* Turn on support for Blocks by selecting **Demo Keyset** and then switching the **PubNub Blocks** setting to *On* and selecting **Save Changes**.
-* Now that your app is set up, we can import the Sift Ninja Block.
+This tutorial assumes you are familiar with PubNub and PubNub Blocks, and have already created an app and block before. 
+If not, PubNub has some [great documentation](https://www.pubnub.com/docs/blocks/introduction) to get you started.
 
-## Import the Block
-* Visit the Sift Ninja Block page at [www.pubnub.com/blocks-catalog/sift-ninja](https://www.pubnub.com/blocks-catalog/sift-ninja/)
-* Select "Try it Now" to create a new Block and import the Sift Ninja template
-* For a brand new PubNub account, you can accept the default values and select **Get Started**
+## Import the Block and Configure Sift Ninja
+* Create or sign in to your [Sift Ninja](https://www.siftninja.com) account
+* Select **Add Channels**, then **PubNub Block**
+* Follow the on-screen instructions to import our PubNub Block template and connect it to Sift Ninja
+
+## Building the Chat App
+PubNub has a tutorial on building a chat app in 10 lines of code which we'll be building on top of:
+
+[PubNub: 10Chat](https://www.pubnub.com/developers/demos/10chat)
+
+Now that we have our chat app running, we'll need to show when Sift Ninja has found content to filter.
+
+First, we'll need to change the format of the data going to the channel.
+
+Replace the `keyup` event listener with the following:
+
+```javascript
+input.addEventListener('keyup', function(e) {
+    if ((e.keyCode || e.charCode) === 13) {
+        pubnub.publish({ channel : channel, message : { text: input.value }, x : (input.value='')});
+    }
+});
+```
+This will send the chat message as an object with a `text` attribute, which is the format expected by Sift Ninja.
+
+Replace the `message` callback handler with the following:
+
+```javascript
+message: function(obj) {
+    box.innerHTML = (''+obj.message.text).replace( /[<>]/g, '' ) + '<br>' + box.innerHTML;
+    if ('sift_ninja' in obj.message && obj.message.sift_ninja.response === false) {
+        box.innerHTML += '<em>Sift Ninja found something bad!</em>' + '<br>';
+    }
+}});
+```
+
+This will check for the presence of a `sift_ninja` object containing a true/false value indicating whether
+or not something objectionable was found.
+
+Save and run your demo app, enter a swear word into the chat box, and you should see a message that
+Sift Ninja found objectionable content.
+
+You can configure your Sift Ninja channel to classify content that is vulgar, racist, bullying, fighting, or 
+contains sexting, or PII (personally identifiable information). What your app does with content identified as objectionable
+is up to you!
