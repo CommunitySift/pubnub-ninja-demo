@@ -16,7 +16,7 @@
     <script>(function(){
         var pubnub = new PubNub({ publishKey : 'demo', subscribeKey : 'demo' });
         function $(id) { return document.getElementById(id); }
-        var box = $('box'), input = $('input'), channel = 'SiftNinja';
+        var box = $('box'), input = $('input'), channel = 'siftninja-input';
         pubnub.addListener({
             message: function(obj) {
                 if ('sift_ninja' in obj.message && obj.message.sift_ninja.response === false) {
